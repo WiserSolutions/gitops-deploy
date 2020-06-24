@@ -1,0 +1,27 @@
+{
+  "name": "gitops-deploy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WiserSolutions/gitops-deploy.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WiserSolutions/gitops-deploy/issues"
+  },
+  "homepage": "https://github.com/WiserSolutions/gitops-deploy#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.4",
+    "js-git": "^0.7.8",
+    "js-github": "^1.1.0",
+    "js-yaml": "^3.14.0",
+    "lodash.set": "^4.3.2"
+  }
+}

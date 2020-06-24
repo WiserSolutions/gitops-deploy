@@ -1,0 +1,32 @@
+name: 'GitOps Deploy'
+description: ''
+inputs:
+  host:
+    description: 'SSH host of your GitOps repository'
+    required: true
+    default: 'github.com'
+  repository:
+    description: 'Path of your GitHub repo (ex. MyName/RepoName)'
+    required: true
+  ref:
+    description: 'Branch or Git identifier to commit on'
+    required: true
+  token:
+    description: 'Authentication for GitHub HTTP'
+    required: false
+  path:
+    description: 'Path of the file which configures this service'
+    required: true
+  field:
+    description: 'Location within the YAML to insert the new version/tag, in lodash set syntax https://lodash.com/docs/4.17.15#set'
+    required: true
+    default: image.tag
+  new-version:
+    description: 'The new version of the app which needs to be set'
+    required: false
+outputs:
+  commit:
+    description: 'Hash of the created commit'
+runs:
+  using: 'node12'
+  main: 'index.js'
