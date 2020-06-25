@@ -1,3 +1,5 @@
+const util = require('util');
+
 const core = require('@actions/core');
 
 const yaml = require('js-yaml');
@@ -29,16 +31,15 @@ async function makeRepo(repoString, token) {
 }
 
 async function getContents(repo, repoPath, ref) {
-  var headHash = await util.promisify(repo.readRef)(ref);
-  var commit = await util.promisify(repo.loadAs)('commit', headHash);
-  console.log(commit.tree);
+  var commitHash = await util.promisify(repo.readRef)(ref);
+  var commit = await util.promisify(repo.loadAs)('commit', commitHash);
   var tree = await util.promisify(repo.loadAs)('tree', commit.tree);
 
   const {contents, mode} = await readPath(repo, tree, repoPath);
 
   const d = yaml.safeLoadAll(contents);
 
-  return { contents: d, mode }
+  return { contents: d, mode, commit, commitHash }
 }
 
 async function writeContents() {
@@ -54,39 +55,54 @@ async function run(callback) {
     const repoPath = core.getInput('path');
     const ref = core.getInput('ref');
 
-    const { contents, mode } = await getContents(repo, repoPath, ref);
+    const { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
 
     // update the contents with the new data
     _set(contents, repoPath, versionToSet);
 
+    const newFile = contents.map((c) => yaml.safeDump(c, { noArrayIndent: true })).join('\n---\n');
+
+    console.log(newFile);
+
     const newTree = [
       {
-        [repoPath]: {
-          mode: mode,
-          content: contents.map((c) => yaml.safeDump(c, { noArrayIndent: true })).join('\n---\n')
-        }
+        path: repoPath,
+        mode: mode,
+        content: Buffer.from(newFile)
       }
     ];
 
     newTree.base = commit.tree;
 
-    const newTreeHash = await repo.createTree(newTree);
+    const newTreeHash = await util.promisify(repo.createTree)(newTree);
 
-    var newCommitHash = await repo.saveAs("commit", {
+    console.log('created tree with hash:', newTreeHash);
+
+    var newCommitHash = await util.promisify(repo.saveAs)('commit', {
       tree: newTreeHash,
       author: {
-        name: "GitOps CI",
-        email: "ci@example.com"
+        name: 'GitOps CI',
+        email: 'ci@example.com',
+        date: { seconds: Math.floor(Date.now() / 1000), offset: 0 }
       },
-      parent: headHash,
+      committer: {
+        name: 'GitOps CI',
+        email: 'ci@example.com',
+        date: { seconds: Math.floor(Date.now() / 1000), offset: 0 }
+      },
+      parents: [commitHash],
       message: `${process.env['GITHUB_REPOSITORY'].split('/')[1]}: new deploy (${versionToSet})`
     });
 
-    await repo.updateRef(ref, newCommitHash);
+    console.log('created commit with hash:', newCommitHash);
+
+    await util.promisify(repo.updateRef)(ref, newCommitHash);
+
+    console.log('updated ref');
 
     core.setOutput("commit", newCommitHash);
   } catch (error) {
-    core.setFailed(error.message);
+    core.setFailed(util.inspect(error));
   }
 }
 
