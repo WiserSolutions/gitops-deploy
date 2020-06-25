@@ -42,10 +42,6 @@ async function getContents(repo, repoPath, ref) {
   return { contents: d, mode, commit, commitHash }
 }
 
-async function writeContents() {
-
-}
-
 async function run(callback) {
   try {
 
@@ -58,11 +54,9 @@ async function run(callback) {
     const { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
 
     // update the contents with the new data
-    _set(contents, repoPath, versionToSet);
+    const newContents = _set(contents, core.getInput('field'), versionToSet);
 
-    const newFile = contents.map((c) => yaml.safeDump(c, { noArrayIndent: true })).join('\n---\n');
-
-    console.log(newFile);
+    const newFile = newContents.map((c) => yaml.safeDump(c, { noArrayIndent: true })).join('\n---\n');
 
     const newTree = [
       {
