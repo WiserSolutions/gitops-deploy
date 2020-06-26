@@ -20,7 +20,7 @@ inputs:
   field:
     description: 'Location within the YAML to insert the new version/tag, in lodash set syntax https://lodash.com/docs/4.17.15#set'
     required: true
-    default: image.tag
+    default: 0.image.tag
   new-version:
     description: 'The new version of the app which needs to be set'
     required: false

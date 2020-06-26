@@ -56,6 +56,8 @@ async function run(callback) {
     // update the contents with the new data
     const newContents = _set(contents, core.getInput('field'), versionToSet);
 
+    console.log(newContents)
+
     const newFile = newContents.map((c) => yaml.safeDump(c, { noArrayIndent: true })).join('\n---\n');
 
     const newTree = [
