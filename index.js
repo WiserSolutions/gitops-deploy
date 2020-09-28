@@ -58,7 +58,7 @@ async function run(callback) {
     let newData;
     const existingData = _get(contents, core.getInput('field'));
     if(existingData.indexOf(':') !== -1) {
-        newData = existingData.substr(0, existingData.indexOf(':') + ':' + versionToSet);
+        newData = existingData.substr(0, existingData.indexOf(':')) + ':' + versionToSet;
     } else {
         newData = versionToSet;
     }
