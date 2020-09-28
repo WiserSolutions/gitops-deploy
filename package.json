@@ -22,6 +22,7 @@
     "js-git": "^0.7.8",
     "js-github": "^1.1.0",
     "js-yaml": "^3.14.0",
+    "lodash.get": "^4.4.2",
     "lodash.set": "^4.3.2"
   }
 }

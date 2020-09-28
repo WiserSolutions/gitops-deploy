@@ -23,7 +23,7 @@ inputs:
     default: 0.image.tag
   new-version:
     description: 'The new version of the app which needs to be set'
-    required: false
+    required: true
 outputs:
   commit:
     description: 'Hash of the created commit'

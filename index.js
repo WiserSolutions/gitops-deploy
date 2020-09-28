@@ -4,6 +4,7 @@ const core = require('@actions/core');
 
 const yaml = require('js-yaml');
 
+const _get = require('lodash.get');
 const _set = require('lodash.set');
 
 async function readPath(repo, tree, path) {
@@ -54,7 +55,16 @@ async function run(callback) {
     const { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
 
     // update the contents with the new data
-    const newContents = _set(contents, core.getInput('field'), versionToSet);
+    let newData;
+    const existingData = _get(contents, core.getInput('field'));
+    if(existingData.indexOf(':') !== -1) {
+        newData = existingData.substr(0, existingData.indexOf(':') + ':' + versionToSet);
+    } else {
+        newData = versionToSet;
+    }
+
+
+    const newContents = _set(contents, core.getInput('field'), newData);
 
     console.log(newContents)
 
