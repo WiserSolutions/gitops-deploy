@@ -11,6 +11,7 @@ inputs:
   ref:
     description: 'Branch or Git identifier to commit on'
     required: true
+    default: 'HEAD'
   token:
     description: 'Authentication for GitHub HTTP'
     required: false
