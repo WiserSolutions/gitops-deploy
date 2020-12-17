@@ -52,6 +52,8 @@ async function run(callback) {
     const repoPath = core.getInput('path');
     const ref = core.getInput('ref');
 
+    console.log(`Updating ${repoPath} to version ${versionToSet}`);
+
     const { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
 
     // update the contents with the new data
@@ -66,7 +68,7 @@ async function run(callback) {
 
     const newContents = _set(contents, core.getInput('field'), newData);
 
-    console.log(newContents)
+    console.log(newContents);
 
     const newFile = newContents.map((c) => yaml.safeDump(c, { noArrayIndent: true })).join('\n---\n');
 
