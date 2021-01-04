@@ -4,8 +4,46 @@ const core = require('@actions/core');
 
 const yaml = require('js-yaml');
 
+const {ECR, DescribeImagesCommand} = require('@aws-sdk/client-ecr');
+
 const _get = require('lodash.get');
 const _set = require('lodash.set');
+const _last = require('lodash.last');
+
+async function checkImageExists(repositoryName, registryId, newVersion) {
+  // return True if the image exists
+  const ecr = new ECR({region: core.getInput('aws-region')});
+
+  try {
+    await ecr.send(
+      new DescribeImagesCommand({
+        imageIds: [{ imageTag: registryId }],
+        repositoryName: repositoryName,
+        registryId: registryId})
+    );
+  }
+  catch (err) {
+    if (err.name == 'ImageNotFoundException') {
+      return false;
+    } else {
+      // this exception is unknown, so rethrow it
+      throw(err);
+    }
+  }
+  return true;
+}
+
+async function shouldVerifyImage(repository) {
+  return repository.includes('dkr.ecr') && core.getInput('aws-access-key-id');
+}
+
+async function splitRepositryPath(repository) {
+  const registryId = repository.split('.')[0];
+  const split_repo = foo.split('/');
+  const short_repo = split_repo.slice(1).join('/');
+
+  return [registryId, split_repo];
+}
 
 async function readPath(repo, tree, path) {
   const parts = path.split('/');
@@ -40,7 +78,7 @@ async function getContents(repo, repoPath, ref) {
 
   const d = yaml.safeLoadAll(contents);
 
-  return { contents: d, mode, commit, commitHash }
+  return { contents: d, mode, commit, commitHash };
 }
 
 async function run(callback) {
@@ -55,6 +93,14 @@ async function run(callback) {
     console.log(`Updating ${repoPath} to version ${versionToSet}`);
 
     const { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
+
+    const repository = _get(contents, core.getInput('repository-field'));
+    if (shouldVerifyImage(repository)) {
+      const [registryId, shortRepoName] = splitRepositryPath(repository);
+      if (!checkImageExists(shortRepoName, registryId, versionToSet)) {
+        console.error(`Failed to find image tag ${versionToSet} in ${repository}`);
+      }
+    }
 
     // update the contents with the new data
     let newData;

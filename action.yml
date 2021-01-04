@@ -21,10 +21,27 @@ inputs:
   field:
     description: 'Location within the YAML to insert the new version/tag, in lodash set syntax https://lodash.com/docs/4.17.15#set'
     required: true
-    default: 0.image.tag
+    default: 0.spec.values.image.tag
+  repository-field:
+    description: 'Location within the YAML containing the image repository'
+    required: false
+    default: 0.spec.values.image.repository
   new-version:
     description: 'The new version of the app which needs to be set'
     required: true
+  aws-access-key-id:
+    description: 'AWS access key ID for verifying image verification'
+    required: false
+  aws-secret-access-key:
+    description: 'AWS secret access key for image verification'
+    required: false
+  aws-session-token:
+    description: 'AWS session token for image verification'
+    required: false
+  aws-region:
+    description: 'AWS session region for image verification'
+    required: false
+    default: 'us-west-2'
 outputs:
   commit:
     description: 'Hash of the created commit'
