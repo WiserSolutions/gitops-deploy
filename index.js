@@ -99,6 +99,7 @@ async function run(callback) {
       const [registryId, shortRepoName] = splitRepositryPath(repository);
       if (!checkImageExists(shortRepoName, registryId, versionToSet)) {
         console.error(`Failed to find image tag ${versionToSet} in ${repository}`);
+        process.exit(1);
       }
     }
 
