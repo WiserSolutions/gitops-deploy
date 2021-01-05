@@ -39,8 +39,7 @@ async function shouldVerifyImage(repository) {
 
 async function splitRepositryPath(repository) {
   const registryId = repository.split('.')[0];
-  const split_repo = repository.split('/');
-  const short_repo = split_repo.slice(1).join('/');
+  const short_repo = repository.slice(repository.indexOf('/') + 1);
 
   return [registryId, split_repo];
 }
