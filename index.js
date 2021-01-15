@@ -51,10 +51,19 @@ async function run(callback) {
     const versionToSet = core.getInput('new-version');
     const repoPath = core.getInput('path');
     const ref = core.getInput('ref');
+    
+    if(!versionToSet) {
+        throw new Error('new-version is not set to anything, cannot update git');
+    }
 
     console.log(`Updating ${repoPath} to version ${versionToSet}`);
 
-    const { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
+    let contents, mode, commit, commitHash;
+    try {
+        { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
+    } catch(err) {
+        throw new Error(`could not read contents of configured gitops file, please make sure ${repoPath} exists!`);
+    }
 
     // update the contents with the new data
     let newData;
@@ -65,6 +74,9 @@ async function run(callback) {
         newData = versionToSet;
     }
 
+    if(newData == existingData) {
+      return core.setOutput("commit", commitHash);
+    }
 
     const newContents = _set(contents, core.getInput('field'), newData);
 
