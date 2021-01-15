@@ -75,6 +75,7 @@ async function run(callback) {
     }
 
     if(newData == existingData) {
+      console.log('nothing to commit, deploy is already set on gitops repo.');
       return core.setOutput("commit", commitHash);
     }
 
