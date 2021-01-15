@@ -74,6 +74,9 @@ async function run(callback) {
         newData = versionToSet;
     }
 
+    if(newData == existingData) {
+      return core.setOutput("commit", commitHash);
+    }
 
     const newContents = _set(contents, core.getInput('field'), newData);
 
