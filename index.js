@@ -60,7 +60,7 @@ async function run(callback) {
 
     let contents, mode, commit, commitHash;
     try {
-        { contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref);
+        ({ contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref));
     } catch(err) {
         throw new Error(`could not read contents of configured gitops file, please make sure ${repoPath} exists!`);
     }
