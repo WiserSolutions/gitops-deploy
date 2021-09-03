@@ -56,7 +56,7 @@ async function run(callback) {
     if(!versionToSet) {
         throw new Error('new-version is not set to anything, cannot update git');
     }
-    repoPaths.forEach(async function(repoPath) {
+    for (const repoPath of repoPaths) {
       console.log(`Updating ${repoPath} to version ${versionToSet}`);
 
       let contents, mode, commit, commitHash;
@@ -123,7 +123,7 @@ async function run(callback) {
       console.log('updated ref');
   
       core.setOutput("commit", newCommitHash);
-    });
+    }
   } catch (error) {
     core.setFailed(util.inspect(error));
   }
