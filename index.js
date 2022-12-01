@@ -62,6 +62,7 @@ async function run(callback) {
     try {
         ({ contents, mode, commit, commitHash } = await getContents(repo, repoPath, ref));
     } catch(err) {
+        console.log(util.inspect(err));
         throw new Error(`could not read contents of configured gitops file, please make sure ${repoPath} exists!`);
     }
 
