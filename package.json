@@ -23,6 +23,7 @@
     "js-github": "^1.1.0",
     "js-yaml": "^3.14.0",
     "lodash.get": "^4.4.2",
-    "lodash.set": "^4.3.2"
+    "lodash.set": "^4.3.2",
+    "promise-retry": "^2.0.1"
   }
 }
