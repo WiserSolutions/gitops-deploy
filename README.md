@@ -30,3 +30,4 @@ Add a step to your deployment workflow, after you have packaged your code (with 
 | `path`                   | yes      | Path of the file which configures this service                   |
 | `field`                  | yes      | Location within the YAML to insert the new version/tag, in [lodash.set syntax](https://lodash.com/docs/4.17.15#set) |
 | `new-version`            | yes      | String which should be set as the new version in the given field |
+| `retryCount`             | no       | Number of times to retry if commit fails due to remote conflicts |

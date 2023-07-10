@@ -140,6 +140,7 @@ async function run(callback) {
         try {
           await util.promisify(repo.updateRef)(ref, newCommitHash);
         } catch (error) {
+          console.log("commit failed, retrying", error)
           retry();
         }
       },
