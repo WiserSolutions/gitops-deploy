@@ -57,6 +57,7 @@ async function run(callback) {
     const versionToSet = core.getInput("new-version");
     const repoPath = core.getInput("path");
     const ref = core.getInput("ref");
+    const retryCount = parseInt(core.getInput("retryCount") ?? 12);
 
     if (!versionToSet) {
       throw new Error("new-version is not set to anything, cannot update git");
@@ -134,7 +135,7 @@ async function run(callback) {
     });
 
     console.log("created commit with hash:", newCommitHash);
-    promiseRetry(
+    await promiseRetry(
       async function (retry) {
         try {
           await util.promisify(repo.updateRef)(ref, newCommitHash);
@@ -142,7 +143,7 @@ async function run(callback) {
           retry();
         }
       },
-      { minTimeout: 1000, retries: 3 }
+      { minTimeout: 1000, retries: retryCount }
     );
 
     console.log("updated ref");
