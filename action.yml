@@ -25,6 +25,9 @@ inputs:
   new-version:
     description: 'The new version of the app which needs to be set'
     required: true
+  retryCount:
+    description: 'Number of times to retry if the remote changes unexpectedly'
+    required: false
 outputs:
   commit:
     description: 'Hash of the created commit'
