@@ -145,13 +145,12 @@ async function run(callback) {
         console.log("created commit with hash:", newCommitHash);
         try {
           await util.promisify(repo.updateRef)(ref, newCommitHash);
+          console.log("updated ref");
+          core.setOutput("commit", newCommitHash);
         } catch (error) {
           console.log("commit failed, retrying:", error);
           return retry();
         }
-
-        console.log("updated ref");
-        core.setOutput("commit", newCommitHash);
       },
       { minTimeout: 1000, retries: retryCount }
     );
