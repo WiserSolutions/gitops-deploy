@@ -49,7 +49,7 @@ async function getContents(repo, repoPath, ref) {
 
 async function run(callback) {
   try {
-    const retryCount = parseInt(core.getInput("retryCount") ?? 12);
+    const retryCount = parseInt(core.getInput("retryCount") ?? 2);
     await promiseRetry(
       async function (retry) {
         const repo = await makeRepo(
